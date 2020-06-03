@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.todo_app.adapter.TodoListAdapter;
 import com.example.todo_app.repositories.TodoRepository;
 import com.example.todo_app.db.TodoTask;
 
@@ -29,4 +30,5 @@ public class TodoTaskViewModel extends AndroidViewModel {
     }
     public void delete(TodoTask todoTask) { mRepository.delete(todoTask);}
     public void update(TodoTask todoTask) { mRepository.update(todoTask);}
+
 }

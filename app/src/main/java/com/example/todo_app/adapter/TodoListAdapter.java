@@ -15,19 +15,22 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.todo_app.MainActivity;
 import com.example.todo_app.R;
 import com.example.todo_app.db.TodoTask;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
-
-import static com.example.todo_app.MainActivity.coordinatorLayout;
-
 public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoTaskViewHolder> {
     private final LayoutInflater mInflater;
     private List<TodoTask> mTasks;
-
+    private OnItemClickListener listener;
+    public interface OnItemClickListener {
+        void onDeleteClick(TodoTask task);
+        void onUndoClick(TodoTask task);
+        void onCheckboxClick(TodoTask task);
+    }
+    public void setOnClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
     public TodoListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
@@ -106,15 +109,14 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoTa
                     optionView.setVisibility(View.GONE);
                     TodoTask task = mTasks.get(getAdapterPosition());
                     TodoTask update = new TodoTask(task.getId(),task.getTitle(),!task.getStatus(),task.getPriority(),task.getDescription());
-                    MainActivity.mtodoTaskViewModel.insert(update);
+                    listener.onUndoClick(update);
                     titletv.setPaintFlags(titletv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
                 }
             });
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MainActivity.mtodoTaskViewModel.delete(mTasks.get(getAdapterPosition()));
-                    Snackbar.make(coordinatorLayout, "Task deleted!",Snackbar.LENGTH_SHORT).show();
+                    listener.onDeleteClick(mTasks.get(getAdapterPosition()));
                 }
             });
             statuscb.setOnClickListener(new View.OnClickListener() {
@@ -126,8 +128,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoTa
                     titletv.setPaintFlags(titletv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     TodoTask task = mTasks.get(getAdapterPosition());
                     TodoTask update = new TodoTask(task.getId(),task.getTitle(),!task.getStatus(),task.getPriority(),task.getDescription());
-                    MainActivity.mtodoTaskViewModel.insert(update);
-                    Snackbar.make(coordinatorLayout,"Great going! complete the rest",Snackbar.LENGTH_SHORT).show();
+                    listener.onCheckboxClick(update);
                 }
             });
         }

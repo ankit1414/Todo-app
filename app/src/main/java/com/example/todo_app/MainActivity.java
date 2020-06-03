@@ -30,8 +30,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    public static TodoTaskViewModel mtodoTaskViewModel;
-    public static CoordinatorLayout coordinatorLayout;
+    public TodoTaskViewModel mtodoTaskViewModel;
+    public CoordinatorLayout coordinatorLayout;
     private CardView noitemcv;
 
     @Override
@@ -60,6 +60,25 @@ public class MainActivity extends AppCompatActivity {
                     noitemcv.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                 }
+            }
+        });
+        mtodoListAdapter.setOnClickListener(new TodoListAdapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(TodoTask task) {
+                mtodoTaskViewModel.delete(task);
+                Snackbar.make(coordinatorLayout, "Task deleted!",Snackbar.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onUndoClick(TodoTask task) {
+                mtodoTaskViewModel.insert(task);
+                Snackbar.make(coordinatorLayout,"Task marked as Incomplete.",Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCheckboxClick(TodoTask task) {
+                mtodoTaskViewModel.insert(task);
+                Snackbar.make(coordinatorLayout,"Great going! Complete rest of them.",Snackbar.LENGTH_SHORT).show();
+
             }
         });
     }
